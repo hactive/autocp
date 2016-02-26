@@ -41,19 +41,24 @@ class Autocp(object):
 					filepath=os.path.join(dir, f)
 					file_state = os.stat(filepath)
 					interval = check_time - file_state.st_mtime
+					#print f, file_state.st_mtime, check_time
 					if interval <= self.check_interval:
 						if os.path.exists(filepath):
-							print 'copy file %s to public dir' % filepath
+							now = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+							print 'copy file %s %s' % (filepath, now)
 							dstpath=os.path.join(self.pub_down_load, f)
 							shutil.copy(filepath, dstpath)
 
 
 public_download_path = r'C:\Users\zyh\Desktop\FTP_PATH'
 match_tuple1 = (r'Z:\bb1407\bin\ar71xx', r'BD.+\.bin')
+match_tuple2 = (r'X:\octeon\OCTEON-SDK\linux\kernel\linux', r'vmlinux\.64')
+match_tuple_list = [match_tuple1, match_tuple2]
 
 def do_auto_cp():
 	first_cp = Autocp(public_download_path)
-	first_cp.add_match_tuple(match_tuple1)
+	for tuple in match_tuple_list:
+		first_cp.add_match_tuple(tuple)
 
 	while True:
 		first_cp.cp_newer_files()
